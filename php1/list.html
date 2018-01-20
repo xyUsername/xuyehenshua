@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        table{
+            width: 800px;
+            height: 800px;
+            margin: 50px auto;
+            border: 1px solid #000;
+        }
+        td{
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+    <td>num</td>
+    <td>name</td>
+    <td>gender</td>
+    <td>birthdate</td>
+    <td>join_date</td>
+    <td>address</td>
+    <td>email</td>
+    <td>phone</td>
+    </thead>
+    <tbody id="dataset">
+
+    </tbody>
+</table>
+</body>
+</html>
+<script src="jquery.js"></script>
+<script src="jquery.tmpl.js"></script>
+<script type="text/x-jquery-tmpl" id="mt">
+    <tr>
+     <td>${num}</td>
+    <td>${name}</td>
+    <td>${gender}</td>
+    <td>${birthdate}</td>
+    <td>${join_date}</td>
+    <td>${address}</td>
+    <td>${email}</td>
+    <td>${phone}</td>
+    </tr>
+</script>
+<!--<script src="list.js"></script>-->
+<script>
+    var xhr=new XMLHttpRequest();
+    xhr.open("get","list.php");
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200){
+            var data=JSON.parse(xhr.responseText);
+            if(data.success){
+                var html = $("#mt").tmpl(data.result);
+                // 4 渲染到页面上 -- 首先把以前的数据清空，再把新的数据填充到表格
+                // $("#dataset").html("").append(html);
+                $("#dataset").append(html);
+            }
+        }
+    }
+    xhr.send();
+</script>

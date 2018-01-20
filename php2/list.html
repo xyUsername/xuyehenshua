@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="layer/mobile/need/layer.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        table{
+            width: 800px;
+            height: 800px;
+            margin: 50px auto;
+            border: 1px solid #000;
+        }
+        td{
+            border: 1px solid #000;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+    <td>num</td>
+    <td>name</td>
+    <td>gender</td>
+    <td>birthdate</td>
+    <td>join_date</td>
+    <td>address</td>
+    <td>email</td>
+    <td>phone</td>
+    <td>操作</td>
+    </thead>
+    <tbody id="dataset">
+
+    </tbody>
+</table>
+</body>
+</html>
+<script src="jquery.js"></script>
+<script src="layer/layer.js"></script>
+<script src="jquery.tmpl.js"></script>
+<script type="text/x-jquery-tmpl" id="mt">
+    <tr data-id="${num}">
+     <td>${num}</td>
+    <td>${name}</td>
+    <td>
+        {{if gender=="f"}}
+        男
+        {{else gender=="m"}}
+        女
+        {{/if}}
+    </td>
+    <td>${birthdate}</td>
+    <td>${join_date}</td>
+    <td>${address}</td>
+    <td>${email}</td>
+    <td>${phone}</td>
+    <td><a href="javascript:void(0);" data-id="${num}" class="del">删除</a></td>
+    </tr>
+</script>
+<script>
+    $.get("oper.php",function (res) {
+        if(res.success){
+            var html=$("#mt").tmpl(res.result);
+            $("#dataset").empty().append(html);
+        }
+    },"json");
+
+   //注册删除事件；
+    $("table").on("click",".del", function () {
+        var that=$(this).parent().parent().attr("data-id");
+            layer.confirm("您确定要删除吗?",{icon :3}, function (index) {
+                layer.close(index);
+                //获取id
+                var id=that;
+                $.post("oper.php",{id:id}, function (res) {
+                    if(res.success){
+                        layer.alert("删除成功",{icon :1}, function () {
+                            location.reload();
+                        })
+                    }else{
+                        layer.alert("删除失败",{icon : 2});
+                    }
+                })
+            })
+    })
+</script>
